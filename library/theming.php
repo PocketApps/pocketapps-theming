@@ -7,28 +7,25 @@ class pocketapps_theming {
         $this->theme = $theme;
     }
 
-    public function get_theme() {
-        return $this->theme;
+    public function get_color($key, $global = false) {
+        return $this->get($key, "colors", $global);
     }
 
-    public function get_color($key) {
-        return $this->get($key, "colors");
+    public function get_image($key, $global = false) {
+        return $this->get($key, "images", $global);
     }
 
-    public function get_image($key) {
-        return $this->get($key, "images");
+    public function get_setting($key, $global = false) {
+        return $this->get($key, "settings", $global);
     }
 
-    public function get_setting($key) {
-        return $this->get($key, "settings");
-    }
-
-    private function get($key, $prefix) {
+    private function get($key, $prefix, $global = false) {
         $key = str_replace(" ", "_", strtoupper($key));
-        $dir = dirname(__FILE__) . "/". $this->theme . "/";
+        $dir = dirname(__FILE__) . $global ? ("/themes/core/") : ("/themes/". $this->theme . "/");
         $file = $dir . "$prefix" . ".json";
+
         if (!is_dir($dir)) {
-            mkdir($dir);
+            mkdir($dir, 0777, true);
         }
         $json = json_decode(file_get_contents($file), true);
         if (!empty($json[$key])) {
